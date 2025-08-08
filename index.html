@@ -819,14 +819,18 @@
             updateCartCount();
         }
 
-        // Search products
+        // Search products - Corrigido para mostrar todos os itens ao limpar a busca
         function searchProducts() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const filteredProducts = products.filter(product => 
-                product.name.toLowerCase().includes(searchTerm) ||
-                product.description.toLowerCase().includes(searchTerm)
-            );
-            displayProducts(filteredProducts);
+            const searchTerm = searchInput.value.toLowerCase().trim(); // Adiciona .trim() para remover espaços em branco
+            if (searchTerm === '') {
+                displayProducts(); // Mostra todos os produtos se a busca estiver vazia
+            } else {
+                const filteredProducts = products.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm)
+                );
+                displayProducts(filteredProducts);
+            }
         }
         
         // Initialize
@@ -836,6 +840,10 @@
         cartBtn.addEventListener('click', showOrderSection);
         closeOrder.addEventListener('click', closeOrderSection);
         searchBtn.addEventListener('click', searchProducts);
+
+        // Adiciona um listener para o evento 'input' no campo de busca
+        searchInput.addEventListener('input', searchProducts); // Chama a busca a cada alteração no input
+
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 searchProducts();
