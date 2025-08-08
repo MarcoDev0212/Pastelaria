@@ -418,26 +418,46 @@
             padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            /* Centraliza o conteúdo do item */
+            text-align: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
         .info-item h3 {
             color: var(--secondary-color);
             margin-bottom: 1rem;
+            font-size: 1.3rem; /* Aumenta um pouco o tamanho do título */
         }
         
-        .contact-link {
+        .info-item p {
+            font-size: 1rem;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item .icon {
+            font-size: 2rem; /* Tamanho dos ícones */
+            margin-bottom: 0.8rem; /* Espaço entre ícone e texto */
+            color: var(--secondary-color);
+        }
+
+        .contact-link-whatsapp,
+        .contact-link-instagram {
             color: var(--dark-color);
             text-decoration: none;
             font-weight: bold;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        
-        .contact-link:hover {
-            background-color: rgba(255,255,255,0.2);
+            display: block; /* Para que o padding e margin funcionem melhor */
+            padding: 0.3rem 0;
+            transition: color 0.3s;
         }
 
+        .contact-link-whatsapp:hover,
+        .contact-link-instagram:hover {
+            color: var(--primary-color);
+        }
         /* Responsive adjustments */
         @media (max-width: 600px) {
             .contact-info {
@@ -451,8 +471,7 @@
         <h1>Delícias da Pastelaria</h1>
         <p>Os melhores pastéis da cidade!</p>
         <nav>
-            <a href="#contato" class="contact-link">Contato</a>
-        </nav>
+            </nav>
     </header>
     
     <div class="container" id="main-content">
@@ -462,44 +481,45 @@
         </div>
         
         <div class="products-grid" id="products-container">
-            <!-- Products will be dynamically inserted here -->
-        </div>
+            </div>
     </div>
 
-    <!-- Contact section -->
     <div class="contact-section" id="contato">
         <div class="container">
-            <h2>Contato</h2>
+            <h2>Fale Conosco</h2>
             <div class="contact-info">
                 <div class="info-item">
+                    <span class="icon">📍</span>
                     <h3>Endereço</h3>
                     <p>Rua dos Pasteis, 123 - Centro</p>
                     <p>São Paulo - SP</p>
                 </div>
                 <div class="info-item">
+                    <span class="icon">📞</span>
                     <h3>Telefone</h3>
-                    <p>(11) 9999-9999</p>
+                    <a href="tel:+5511999999999" class="contact-link-whatsapp">(11) 9999-9999</a>
+                    <a href="https://wa.me/5511999999999" target="_blank" class="contact-link-whatsapp">Fale pelo WhatsApp</a>
                 </div>
                 <div class="info-item">
-                    <h3>Horário</h3>
+                    <span class="icon">⏰</span>
+                    <h3>Horário de Funcionamento</h3>
                     <p>Segunda a Sexta: 10h - 22h</p>
                     <p>Sábado e Domingo: 11h - 23h</p>
                 </div>
                 <div class="info-item">
+                    <span class="icon">📸</span>
                     <h3>Instagram</h3>
-                    <p>@deliciasdapastelaria</p>
+                    <a href="https://www.instagram.com/deliciasdapastelaria" target="_blank" class="contact-link-instagram">@deliciasdapastelaria</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Floating cart button -->
     <div class="cart-btn" id="cart-btn">
         <span id="cart-icon">🛒</span>
         <span class="cart-count" id="cart-count">0</span>
     </div>
     
-    <!-- Order section -->
     <div class="order-section" id="order-section">
         <div class="order-container">
             <div class="order-header">
@@ -508,8 +528,7 @@
             </div>
             
             <div class="order-items" id="order-items">
-                <!-- Order items will be dynamically inserted here -->
-            </div>
+                </div>
             
             <div class="order-total">
                 <span>Total:</span>
@@ -728,7 +747,6 @@
         // Show order section
         function showOrderSection() {
             renderOrderItems();
-            addItemControlsListeners();
             orderSection.style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
@@ -774,37 +792,20 @@
             orderTotal.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
         }
         
-        // Add quantity control event listeners
-        function addItemControlsListeners() {
-            // Remove old listeners first
-            document.querySelectorAll('.plus-btn').forEach(btn => {
-                btn.removeEventListener('click', increaseQuantity);
-                btn.addEventListener('click', increaseQuantity);
-            });
-            document.querySelectorAll('.minus-btn').forEach(btn => {
-                btn.removeEventListener('click', decreaseQuantity);
-                btn.addEventListener('click', decreaseQuantity);
-            });
-            document.querySelectorAll('.remove-btn').forEach(btn => {
-                btn.removeEventListener('click', removeItem);
-                btn.addEventListener('click', removeItem);
-            });
-        }
-
         // Increase item quantity
-        function increaseQuantity(e) {
-            const productId = parseInt(e.target.getAttribute('data-id'));
+        function increaseQuantity(productId) {
             const item = cart.find(item => item.id === productId);
-            item.quantity += 1;
-            renderOrderItems();
-            updateCartCount();
+            if (item) {
+                item.quantity += 1;
+                renderOrderItems();
+                updateCartCount();
+            }
         }
 
         // Decrease item quantity
-        function decreaseQuantity(e) {
-            const productId = parseInt(e.target.getAttribute('data-id'));
+        function decreaseQuantity(productId) {
             const item = cart.find(item => item.id === productId);
-            if (item.quantity > 1) {
+            if (item && item.quantity > 1) {
                 item.quantity -= 1;
                 renderOrderItems();
                 updateCartCount();
@@ -812,8 +813,7 @@
         }
 
         // Remove item completely
-        function removeItem(e) {
-            const productId = parseInt(e.target.getAttribute('data-id'));
+        function removeItem(productId) {
             cart = cart.filter(item => item.id !== productId);
             renderOrderItems();
             updateCartCount();
@@ -852,6 +852,20 @@
             deliveryOption.classList.add('selected');
             pickupOption.classList.remove('selected');
             deliveryForm.style.display = 'block';
+        });
+
+        // Event delegation for quantity controls and remove button
+        orderItems.addEventListener('click', (e) => {
+            const target = e.target;
+            const productId = parseInt(target.getAttribute('data-id'));
+
+            if (target.classList.contains('plus-btn')) {
+                increaseQuantity(productId);
+            } else if (target.classList.contains('minus-btn')) {
+                decreaseQuantity(productId);
+            } else if (target.classList.contains('remove-btn')) {
+                removeItem(productId);
+            }
         });
         
         // Generate WhatsApp message
